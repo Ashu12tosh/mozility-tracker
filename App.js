@@ -1,6 +1,6 @@
+import "./global.css";
 import React, { useState, useEffect } from "react";
 import {
-  StyleSheet,
   View,
   Button,
   Alert,
@@ -9,6 +9,7 @@ import {
   FlatList,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import NetInfo from "@react-native-community/netinfo";
@@ -440,26 +441,29 @@ export default function App() {
 
   // Render location item
   const renderLocationItem = ({ item, index }) => (
-    <View style={styles.tableRow}>
-      <View style={styles.tableCell}>
-        <Text style={styles.cellText}>{index + 1}</Text>
+    <View className="flex-row border-b border-gray-200 py-2">
+      <View className="flex-1 px-1 justify-center">
+        <Text className="text-xs text-center text-gray-800">{index + 1}</Text>
       </View>
-      <View style={styles.tableCell}>
-        <Text style={styles.cellText}>
+      <View className="flex-1 px-1 justify-center">
+        <Text className="text-xs text-center text-gray-800">
           {formatCoords(item.latitude, item.longitude)}
         </Text>
       </View>
-      <View style={styles.tableCell}>
-        <Text style={styles.cellText}>{formatDate(item.timestamp)}</Text>
+      <View className="flex-1 px-1 justify-center">
+        <Text className="text-xs text-center text-gray-800">
+          {formatDate(item.timestamp)}
+        </Text>
       </View>
-      <View style={styles.tableCell}>
+      <View className="flex-1 px-1 justify-center">
         <View
-          style={[
-            styles.syncBadge,
-            item.synced ? styles.syncedBadge : styles.pendingBadge,
-          ]}
+          className={`w-6 h-6 rounded-full self-center justify-center items-center ${
+            item.synced ? "bg-green-500" : "bg-red-500"
+          }`}
         >
-          <Text style={styles.syncText}>{item.synced ? "✓" : "●"}</Text>
+          <Text className="text-white font-bold text-xs">
+            {item.synced ? "✓" : "●"}
+          </Text>
         </View>
       </View>
     </View>
@@ -467,87 +471,96 @@ export default function App() {
 
   // Render table header
   const renderTableHeader = () => (
-    <View style={styles.tableHeader}>
-      <View style={styles.tableCell}>
-        <Text style={styles.headerText}>#</Text>
+    <View className="flex-row bg-blue-500 rounded-t-lg py-2">
+      <View className="flex-1 px-1">
+        <Text className="text-white font-bold text-center text-xs">#</Text>
       </View>
-      <View style={styles.tableCell}>
-        <Text style={styles.headerText}>Coordinates</Text>
+      <View className="flex-1 px-1">
+        <Text className="text-white font-bold text-center text-xs">
+          Coordinates
+        </Text>
       </View>
-      <View style={styles.tableCell}>
-        <Text style={styles.headerText}>Time</Text>
+      <View className="flex-1 px-1">
+        <Text className="text-white font-bold text-center text-xs">Time</Text>
       </View>
-      <View style={styles.tableCell}>
-        <Text style={styles.headerText}>Sync</Text>
+      <View className="flex-1 px-1">
+        <Text className="text-white font-bold text-center text-xs">Sync</Text>
       </View>
     </View>
   );
 
   return (
     <ScrollView
-      style={styles.container}
+      className="flex-1 bg-gray-50"
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Text style={styles.title}>Mozility Tracker</Text>
+      {/* Header */}
+      <Text className="text-2xl font-bold text-center mt-10 mb-5 text-gray-800">
+        Mozility Tracker
+      </Text>
 
       {/* Stats Bar */}
-      <View style={styles.statsContainer}>
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>{stats.total || 0}</Text>
-          <Text style={styles.statLabel}>Total</Text>
+      <View className="flex-row bg-white mx-5 mb-5 rounded-xl p-4 shadow-sm border border-gray-100">
+        <View className="flex-1 items-center">
+          <Text className="text-2xl font-bold text-blue-500">
+            {stats.total || 0}
+          </Text>
+          <Text className="text-xs text-gray-600 mt-1">Total</Text>
         </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>{stats.synced || 0}</Text>
-          <Text style={styles.statLabel}>Synced</Text>
+        <View className="w-px bg-gray-200 mx-2" />
+        <View className="flex-1 items-center">
+          <Text className="text-2xl font-bold text-blue-500">
+            {stats.synced || 0}
+          </Text>
+          <Text className="text-xs text-gray-600 mt-1">Synced</Text>
         </View>
-        <View style={styles.statDivider} />
-        <View style={styles.statItem}>
-          <Text style={styles.statNumber}>{stats.pending || 0}</Text>
-          <Text style={styles.statLabel}>Pending</Text>
+        <View className="w-px bg-gray-200 mx-2" />
+        <View className="flex-1 items-center">
+          <Text className="text-2xl font-bold text-blue-500">
+            {stats.pending || 0}
+          </Text>
+          <Text className="text-xs text-gray-600 mt-1">Pending</Text>
         </View>
       </View>
 
       {/* Status Panel */}
-      <View style={styles.statusContainer}>
-        <View style={styles.statusRow}>
-          <Text style={styles.statusLabel}>Tracking:</Text>
+      <View className="bg-white mx-5 mb-5 rounded-xl p-4 shadow-sm border border-gray-100">
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className="text-sm text-gray-600">Tracking:</Text>
           <View
-            style={[
-              styles.statusIndicator,
-              isTracking ? styles.activeIndicator : styles.inactiveIndicator,
-            ]}
+            className={`px-3 py-1 rounded-full ${
+              isTracking ? "bg-green-500" : "bg-red-500"
+            }`}
           >
-            <Text style={styles.statusValue}>
+            <Text className="text-white text-sm font-medium">
               {isTracking ? "ACTIVE" : "INACTIVE"}
             </Text>
           </View>
         </View>
-        <View style={styles.statusRow}>
-          <Text style={styles.statusLabel}>Network:</Text>
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className="text-sm text-gray-600">Network:</Text>
           <View
-            style={[
-              styles.statusIndicator,
-              isOnline ? styles.onlineIndicator : styles.offlineIndicator,
-            ]}
+            className={`px-3 py-1 rounded-full ${
+              isOnline ? "bg-green-500" : "bg-orange-500"
+            }`}
           >
-            <Text style={styles.statusValue}>
+            <Text className="text-white text-sm font-medium">
               {isOnline ? "ONLINE" : "OFFLINE"}
             </Text>
           </View>
         </View>
-        <View style={styles.statusRow}>
-          <Text style={styles.statusLabel}>Permission:</Text>
-          <Text style={styles.statusValue}>
+        <View className="flex-row justify-between items-center mb-2">
+          <Text className="text-sm text-gray-600">Permission:</Text>
+          <Text className="text-sm font-medium">
             {locationPermission === "granted" ? "✓ Granted" : "✗ Required"}
           </Text>
         </View>
         {testMode && (
-          <View style={styles.statusRow}>
-            <Text style={styles.statusLabel}>Test Mode:</Text>
-            <Text style={[styles.statusValue, styles.testModeText]}>
+          <View className="flex-row justify-between items-center">
+            <Text className="text-sm text-gray-600">Test Mode:</Text>
+            <Text className="text-sm font-medium text-purple-600 font-bold">
               ACTIVE (UI updates every 5s)
             </Text>
           </View>
@@ -555,43 +568,73 @@ export default function App() {
       </View>
 
       {/* Control Buttons */}
-      <View style={styles.buttonContainer}>
-        <View style={styles.buttonRow}>
-          <Button
-            title="Start Tracking"
+      <View className="mx-5 mb-5">
+        <View className="flex-row justify-between mb-2">
+          <TouchableOpacity
+            className={`flex-1 mr-1 rounded-lg py-3 ${
+              isTracking || locationPermission !== "granted"
+                ? "bg-gray-300"
+                : "bg-green-500"
+            }`}
             onPress={startTracking}
-            color="#4CAF50"
             disabled={isTracking || locationPermission !== "granted"}
-          />
-          <Button
-            title="Stop Tracking"
+          >
+            <Text className="text-white text-center font-medium">
+              Start Tracking
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className={`flex-1 ml-1 rounded-lg py-3 ${
+              !isTracking ? "bg-gray-300" : "bg-red-500"
+            }`}
             onPress={stopTracking}
-            color="#F44336"
             disabled={!isTracking}
-          />
+          >
+            <Text className="text-white text-center font-medium">
+              Stop Tracking
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.buttonRow}>
-          <Button
-            title="Sync Now"
+        <View className="flex-row justify-between mb-2">
+          <TouchableOpacity
+            className={`flex-1 mr-1 rounded-lg py-3 ${
+              !isOnline ? "bg-gray-300" : "bg-blue-500"
+            }`}
             onPress={syncData}
-            color="#2196F3"
             disabled={!isOnline}
-          />
-          <Button
-            title="Test Location"
+          >
+            <Text className="text-white text-center font-medium">Sync Now</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="flex-1 ml-1 rounded-lg py-3 bg-purple-500"
             onPress={testLocation}
-            color="#9C27B0"
-          />
+          >
+            <Text className="text-white text-center font-medium">
+              Test Location
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View style={styles.buttonRow}>
-          <Button title="Clear Data" onPress={clearDatabase} color="#FF9800" />
-          <Button title="Refresh" onPress={onRefresh} color="#607D8B" />
+        <View className="flex-row justify-between">
+          <TouchableOpacity
+            className="flex-1 mr-1 rounded-lg py-3 bg-orange-500"
+            onPress={clearDatabase}
+          >
+            <Text className="text-white text-center font-medium">
+              Clear Data
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className="flex-1 ml-1 rounded-lg py-3 bg-gray-600"
+            onPress={onRefresh}
+          >
+            <Text className="text-white text-center font-medium">Refresh</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
       {/* Location Data Table */}
-      <View style={styles.tableContainer}>
-        <Text style={styles.tableTitle}>
+      <View className="bg-white mx-5 mb-5 rounded-xl p-4 shadow-sm border border-gray-100">
+        <Text className="text-base font-bold mb-3 text-gray-800 text-center">
           Recent Locations ({locations.length})
           {testMode && " - Auto-refresh enabled"}
         </Text>
@@ -607,36 +650,38 @@ export default function App() {
             initialNumToRender={10}
           />
         ) : (
-          <View style={styles.emptyTable}>
-            <Text style={styles.emptyText}>No location data yet</Text>
-            <Text style={styles.emptySubText}>
+          <View className="py-8 items-center">
+            <Text className="text-base text-gray-600 mb-1">
+              No location data yet
+            </Text>
+            <Text className="text-xs text-gray-500 text-center">
               Start tracking to capture locations every 40 seconds
             </Text>
           </View>
         )}
 
-        <View style={styles.tableFooter}>
-          <Text style={styles.footerText}>
+        <View className="mt-4 pt-3 border-t border-gray-200">
+          <Text className="text-xs text-gray-600 text-center mb-1">
             Locations update every 40 seconds when tracking is active
           </Text>
-          <Text style={styles.footerText}>
+          <Text className="text-xs text-gray-600 text-center">
             Green check = Synced, Red dot = Pending sync
           </Text>
         </View>
       </View>
 
       {/* Info Panel */}
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoText}>
+      <View className="bg-blue-50 mx-5 mb-8 rounded-xl p-4 border border-blue-100">
+        <Text className="text-xs text-blue-700 mb-1">
           📍 Tracking: Every 40 seconds when active
         </Text>
-        <Text style={styles.infoText}>
+        <Text className="text-xs text-blue-700 mb-1">
           💾 Storage: SQLite database (offline capable)
         </Text>
-        <Text style={styles.infoText}>
+        <Text className="text-xs text-blue-700 mb-1">
           🔄 Sync: Automatic when online, manual sync available
         </Text>
-        <Text style={styles.infoText}>
+        <Text className="text-xs text-blue-700">
           📱 Background: Works even when app is closed
         </Text>
       </View>
@@ -701,212 +746,4 @@ TaskManager.defineTask(SYNC_TASK_NAME, async () => {
   }
 
   return BackgroundFetch.BackgroundFetchResult.NoData;
-});
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 40,
-    marginBottom: 20,
-    color: "#333",
-  },
-  statsContainer: {
-    flexDirection: "row",
-    backgroundColor: "white",
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#2196F3",
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#666",
-    marginTop: 5,
-  },
-  statDivider: {
-    width: 1,
-    backgroundColor: "#e0e0e0",
-    marginHorizontal: 10,
-  },
-  statusContainer: {
-    backgroundColor: "white",
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  statusRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  statusLabel: {
-    fontSize: 14,
-    color: "#666",
-  },
-  statusValue: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  statusIndicator: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  activeIndicator: {
-    backgroundColor: "#4CAF50",
-  },
-  inactiveIndicator: {
-    backgroundColor: "#F44336",
-  },
-  onlineIndicator: {
-    backgroundColor: "#4CAF50",
-  },
-  offlineIndicator: {
-    backgroundColor: "#FF9800",
-  },
-  testModeText: {
-    color: "#9C27B0",
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    marginHorizontal: 20,
-    marginBottom: 20,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 10,
-  },
-  tableContainer: {
-    backgroundColor: "white",
-    marginHorizontal: 20,
-    marginBottom: 20,
-    borderRadius: 10,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  tableTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 15,
-    color: "#333",
-    textAlign: "center",
-  },
-  tableHeader: {
-    flexDirection: "row",
-    backgroundColor: "#2196F3",
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-    paddingVertical: 10,
-  },
-  tableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    paddingVertical: 8,
-  },
-  tableCell: {
-    flex: 1,
-    paddingHorizontal: 5,
-    justifyContent: "center",
-  },
-  headerText: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 12,
-  },
-  cellText: {
-    fontSize: 11,
-    textAlign: "center",
-    color: "#333",
-  },
-  syncBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    alignSelf: "center",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  syncedBadge: {
-    backgroundColor: "#4CAF50",
-  },
-  pendingBadge: {
-    backgroundColor: "#F44336",
-  },
-  syncText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 12,
-  },
-  emptyTable: {
-    padding: 30,
-    alignItems: "center",
-  },
-  emptyText: {
-    fontSize: 16,
-    color: "#666",
-    marginBottom: 5,
-  },
-  emptySubText: {
-    fontSize: 12,
-    color: "#999",
-    textAlign: "center",
-  },
-  tableFooter: {
-    marginTop: 15,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
-  },
-  footerText: {
-    fontSize: 10,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 3,
-  },
-  infoContainer: {
-    backgroundColor: "#E3F2FD",
-    marginHorizontal: 20,
-    marginBottom: 30,
-    borderRadius: 10,
-    padding: 15,
-  },
-  infoText: {
-    fontSize: 12,
-    color: "#1976D2",
-    marginBottom: 5,
-  },
 });
